@@ -22,21 +22,35 @@ function Login() {
 
                     password: password
                 });
+                if (response.data) {
 
-            if(response.data){
+    localStorage.setItem(
+        "token",
+        response.data.token
+    );
 
-                localStorage.setItem(
-                    "user",
-                    JSON.stringify(
-                        response.data
-                    )
-                );
+    localStorage.setItem(
+        "userId",
+        response.data.userId
+    );
 
-                alert("Login Successful");
+    localStorage.setItem(
+        "email",
+        response.data.email
+    );
 
-                navigate("/dashboard");
+    localStorage.setItem(
+        "role",
+        response.data.role
+    );
 
-            } else {
+    alert("Login Successful");
+
+    navigate("/dashboard");
+
+}
+
+           else {
 
                 alert(
                     "Invalid Email Or Password"

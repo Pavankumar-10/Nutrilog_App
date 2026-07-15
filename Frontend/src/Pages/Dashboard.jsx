@@ -1,18 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getDashboard } from "../Services/FoodServices";
+import { getProfile } from "../Services/UserServices";
+import "../Styles/Dashboard.css";
 
 function Dashboard() {
 
     const navigate = useNavigate();
 
     const [summary, setSummary] = useState(null);
+    const [userName, setUserName] = useState("");
+    const [greeting, setGreeting] = useState("");
     const loadDashboard = async () => {
 
         try {
-            const user = JSON.parse(localStorage.getItem("user"));
-
-            const response = await getDashboard(user.userId);
+           const response = await getDashboard();
 
             setSummary(response.data);
 
@@ -24,80 +26,131 @@ function Dashboard() {
         }
     };
 
-    useEffect(() => {
-        loadDashboard();
-    }, []);
+   useEffect(() => {
 
-    
+    loadDashboard();
+    loadProfile();
+    setGreetingMessage();
 
-    return (
+}, []);
 
-        <div>
+    const loadProfile = async () => {
 
-            <h1>Welcome to Nutri-Log Dashboard</h1>
+    try {
 
-            <div>
+        const response = await getProfile();
 
-                <h3>Today's Calories</h3>
+        setUserName(response.data.fname);
 
-                <p>
-                    {summary ? summary.calories : 0} kcal
-                </p>
+    } catch (error) {
 
-            </div>
+        console.error(error);
 
-            <div>
+    }
 
-                <h3>Today's Protein</h3>
+};
+const setGreetingMessage = () => {
 
-                <p>
-                    {summary ? summary.protein : 0} g
-                </p>
+    const hour = new Date().getHours();
 
-            </div>
+    if (hour < 12) {
 
-            <div>
+        setGreeting("☀️ Good Morning");
 
-                <h3>Today's Carbs</h3>
+    }
+    else if (hour < 17) {
 
-                <p>
-                    {summary ? summary.carbs : 0} g
-                </p>
+        setGreeting("🌤️ Good Afternoon");
 
-            </div>
+    }
+    else {
 
-            <div>
+        setGreeting("🌙 Good Evening");
 
-                <h3>Today's Fats</h3>
+    }
 
-                <p>
-                    {summary ? summary.fats : 0} g
-                </p>
+};
 
-            </div>
+   return (
 
-            <hr />
+    <div className="dashboard-container">
 
-            <button
-                onClick={() => navigate("/addfood")}
-            >
-                Add Food
-            </button>
+        <div className="welcome-section">
 
-            <button
-                onClick={() => navigate("/foodhistory")}
-            >
-                Food History
-            </button>
+        
 
-            <button
-                onClick={() => navigate("/profile")}
-            >
-                Profile
-            </button>
+            <h1> {greeting}, {userName}</h1>
+             <p>
+                 Stay consistent! Every healthy meal brings you closer to your goal. 💚
+            </p>
 
         </div>
-    );
+
+        <div className="dashboard-cards">
+
+            <div className="card calories">
+
+                <h3>🔥 Calories</h3>
+
+                <h2>{summary ? summary.calories : 0}</h2>
+
+                <p>kcal Today</p>
+
+            </div>
+
+            <div className="card protein">
+
+                <h3>🥩 Protein</h3>
+
+                <h2>{summary ? summary.protein : 0}</h2>
+
+                <p>grams</p>
+
+            </div>
+
+            <div className="card carbs">
+
+                <h3>🍚 Carbs</h3>
+
+                <h2>{summary ? summary.carbs : 0}</h2>
+
+                <p>grams</p>
+
+            </div>
+
+            <div className="card fats">
+
+                <h3>🥑 Fats</h3>
+
+                <h2>{summary ? summary.fats : 0}</h2>
+
+                <p>grams</p>
+
+            </div>
+
+        </div>
+
+        <hr />
+
+        <div className="quick-actions">
+
+    <button onClick={() => navigate("/addfood")}>
+        ➕ Add Food
+    </button>
+
+    <button onClick={() => navigate("/foodhistory")}>
+        📋 Food History
+    </button>
+
+    <button onClick={() => navigate("/profile")}>
+        👤 Profile
+    </button>
+
+</div>
+
+    </div>
+
+);
 }
 
 export default Dashboard;

@@ -76,3 +76,28 @@
   background: #16a34a;
   transform: translateY(-2px);
 }
+
+.error{
+    color:red;
+    font-size:13px;
+    margin-top:5px;
+    margin-bottom:10px;
+}
+
+.error{
+
+    display:block;
+
+    color:#ff3b3b;
+
+    font-size:13px;
+
+    margin-top:-8px;
+
+    margin-bottom:12px;
+
+    text-align:left;
+
+    font-weight:600;
+
+}

@@ -4,6 +4,7 @@ import Dashboard from "./Pages/Dashboard";
 import AddFood from "./Pages/AddFood";
 import FoodHistory from "./Pages/FoodHistory";
 import Profile from "./Pages/Profile";
+import PrivateRoute from "./Pages/PrivateRoute";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -27,11 +28,15 @@ function App() {
         <Route path="/features" element={<Features />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+       <Route path="/dashboard"element={<PrivateRoute><Dashboard /></PrivateRoute>}
+/>
         <Route path="/users" element={<Users />} />
-        <Route path="/addfood" element={<AddFood />} />
-        <Route path="/foodhistory" element={<FoodHistory />} />
-        <Route path="/profile" element={<Profile />} />
+       <Route path="/addfood"element={<PrivateRoute><AddFood /></PrivateRoute>}
+/>
+      <Route path="/foodhistory"element={<PrivateRoute><FoodHistory /></PrivateRoute>}
+/>
+        <Route path="/profile"element={<PrivateRoute><Profile /></PrivateRoute>}
+/>
         <Route path="/foodhistory"element={<FoodHistory />}
         
 />        <Route path="/editfood/:id" element={<EditFood />} />

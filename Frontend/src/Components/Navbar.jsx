@@ -1,18 +1,34 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "../Styles/Navbar.css";
 
 function Navbar() {
 
     const navigate = useNavigate();
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    const [token, setToken] = useState(localStorage.getItem("token"));
+    const location = useLocation();
 
-    const handleLogout = () => {
 
-        localStorage.removeItem("user");
 
-        navigate("/login");
-    };
+useEffect(() => {
+
+    setToken(localStorage.getItem("token"));
+
+}, [location]);
+
+   const handleLogout = () => {
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("email");
+    localStorage.removeItem("role");
+
+    setToken(null);
+
+    navigate("/");
+
+};
 
     return (
 
@@ -22,15 +38,9 @@ function Navbar() {
 
             <ul>
 
-                <li><Link to="/">Home</Link></li>
-
-                <li><Link to="/features">Features</Link></li>
-
-                <li><Link to="/about">About</Link></li>
-
                 {
 
-                    user ? (
+                    token ? (
 
                         <>
 
@@ -41,15 +51,27 @@ function Navbar() {
                             </li>
 
                             <li>
+                                <Link to="/addfood">
+                                    Add Food
+                                </Link>
+                            </li>
+
+                            <li>
                                 <Link to="/foodhistory">
                                     Food History
                                 </Link>
                             </li>
 
                             <li>
-                                <button onClick={handleLogout}>
+                                <Link to="/profile">
+                                    Profile
+                                </Link>
+                            </li>
+
+                            <li>
+                                <Link to="#" onClick={handleLogout}>
                                     Logout
-                                </button>
+                               </Link>                 
                             </li>
 
                         </>
@@ -57,6 +79,24 @@ function Navbar() {
                     ) : (
 
                         <>
+
+                            <li>
+                                <Link to="/">
+                                    Home
+                                </Link>
+                            </li>
+
+                            <li>
+                                <Link to="/features">
+                                    Features
+                                </Link>
+                            </li>
+
+                            <li>
+                                <Link to="/about">
+                                    About
+                                </Link>
+                            </li>
 
                             <li>
                                 <Link to="/login">

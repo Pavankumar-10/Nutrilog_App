@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.nutrilog.DTO.DashboardDTO;
 import com.nutrilog.Entity.FoodEntry;
+import com.nutrilog.Entity.User;
 import com.nutrilog.Repository.FoodEntryRepository;
 
 @Service
@@ -15,7 +16,42 @@ public class FoodEntryService {
 
     @Autowired
     private FoodEntryRepository repository;
+    @Autowired
+    private UserService userService;
+    
+    public DashboardDTO getDashboard()
+    {
 
+    	    User user = userService.getLoggedInUser();
+
+    	    Integer userId = user.getUserId();
+
+    	    List<FoodEntry> foods =
+    	            repository.findByUserIdAndEntryDate(
+    	                    userId,
+    	                    LocalDate.now());
+
+    	    double calories = 0;
+    	    double protein = 0;
+    	    double carbs = 0;
+    	    double fats = 0;
+
+    	    for (FoodEntry food : foods) {
+
+    	        calories += food.getCalories();
+    	        protein += food.getProtein();
+    	        carbs += food.getCarbs();
+    	        fats += food.getFats();
+    	    }
+
+    	    return new DashboardDTO(
+    	            calories,
+    	            protein,
+    	            carbs,
+    	            fats);
+    	}
+    
+    	
     // Get All Food Entries
     public List<FoodEntry> getAllFoodEntries() {
         return repository.findAll();
@@ -23,7 +59,13 @@ public class FoodEntryService {
 
     // Add Food Entry
     public FoodEntry saveFood(FoodEntry food) {
+
+        User user = userService.getLoggedInUser();
+
+        food.setUserId(user.getUserId());
+
         return repository.save(food);
+
     }
 
     // Get Food Entry By Id
@@ -42,34 +84,13 @@ public class FoodEntryService {
         repository.deleteById(id);
     }
     
-    public List<FoodEntry> getFoodHistory(Integer userId) {
+    public List<FoodEntry> getFoodHistory() {
 
-        return repository.findByUserId(userId);
+        User user = userService.getLoggedInUser();
+
+        return repository.findByUserId(user.getUserId());
 
     }
     
-    public DashboardDTO getDashboard(
-            Integer userId) {
-
-    List<FoodEntry> foods = repository.findByUserIdAndEntryDate( userId, LocalDate.now());
-
-        double calories = 0;
-        double protein = 0;
-        double carbs = 0;
-        double fats = 0;
-
-        for(FoodEntry food : foods) {
-
-            calories += food.getCalories();
-            protein += food.getProtein();
-            carbs += food.getCarbs();
-            fats += food.getFats();
-        }
-
-        return new DashboardDTO(
-                calories,
-                protein,
-                carbs,
-                fats);
-    }
+    
 }

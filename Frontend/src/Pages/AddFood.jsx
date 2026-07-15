@@ -1,170 +1,255 @@
 import { useState } from "react";
-import { calculateNutrition,saveFoodEntry } from "../Services/FoodServices";
+import { calculateNutrition, saveFoodEntry } from "../Services/FoodServices";
+import "../Styles/AddFood.css";
 
 function AddFood() {
 
     const [foodName, setFoodName] = useState("");
     const [quantity, setQuantity] = useState("");
     const [mealType, setMealType] = useState("");
+    const [unit, setUnit] = useState("g");
     const [result, setResult] = useState(null);
 
     const handleCalculate = async () => {
 
         try {
-            
 
             const response = await calculateNutrition({
+
                 foodName: foodName,
+
                 quantity: quantity
+
             });
 
             setResult(response.data);
 
-        } catch (error) {
+        }
+        catch (error) {
 
             console.error(error);
+
             alert("Calculation Failed");
+
         }
+
     };
 
     const handleSave = async () => {
 
-    try {
-        const user = JSON.parse(localStorage.getItem("user"));
+        try {
 
-        const foodEntry = {
+            const foodEntry = {
 
-            userId: user.userId, 
+                foodName: result.foodName,
 
-            foodName: result.foodName,
+                calories: result.calories,
 
-            calories: result.calories,
+                protein: result.protein,
 
-            protein: result.protein,
+                carbs: result.carbs,
 
-            carbs: result.carbs,
+                fats: result.fats,
 
-            fats: result.fats,
+                mealType: mealType,
 
-            mealType: mealType,
+                entryDate: new Date()
+                    .toISOString()
+                    .split("T")[0]
 
-            entryDate:
-                new Date()
-                .toISOString()
-                .split("T")[0]
-        };
+            };
 
-        console.log("User:", user);
-        console.log("Food Entry:", foodEntry);
-        await saveFoodEntry(foodEntry);
+            await saveFoodEntry(foodEntry);
 
-        alert("Food Saved Successfully");
+            alert("Food Saved Successfully");
 
-    }
-    catch(error) {
+            setFoodName("");
+            setQuantity("");
+            setMealType("");
+            setUnit("g");
+            setResult(null);
 
-        console.error(error);
+        }
+        catch (error) {
 
-        alert("Failed To Save Food");
-    }
-};
+            console.error(error);
+
+            alert("Failed To Save Food");
+
+        }
+
+    };
 
     return (
 
-        <div>
+        <div className="addfood-container">
 
-            <h2>Add Food Entry</h2>
+            <div className="addfood-card">
 
-            <input
-                type="text"
-                placeholder="Food Name"
-                value={foodName}
-                onChange={(e) =>
-                    setFoodName(e.target.value)
-                }
-            />
+                <h2>🍽 Add Food</h2>
 
-            <br /><br />
+                <p>
+                    Track your meals and monitor your daily nutrition.
+                </p>
 
-            <input
-                type="number"
-                placeholder="Quantity (gm)"
-                value={quantity}
-                onChange={(e) =>
-                    setQuantity(e.target.value)
-                }
-            />
+                <input
+                    type="text"
+                    placeholder="Food Name"
+                    value={foodName}
+                    onChange={(e) =>
+                        setFoodName(e.target.value)
+                    }
+                />
 
-            <br /><br />
+                <div className="quantity-row">
 
-            <select
-                value={mealType}
-                onChange={(e) =>
-                    setMealType(e.target.value)
-                }
-            >
-                <option value="">
-                    Select Meal Type
-                </option>
+                    <input
+                        type="number"
+                        placeholder={
+                            unit === "g"
+                                ? "Quantity (grams)"
+                                : "Quantity (ml)"
+                        }
+                        value={quantity}
+                        onChange={(e) =>
+                            setQuantity(e.target.value)
+                        }
+                    />
 
-                <option value="Breakfast">
-                    Breakfast
-                </option>
+                    <select
+                        value={unit}
+                        onChange={(e) =>
+                            setUnit(e.target.value)
+                        }
+                    >
 
-                <option value="Lunch">
-                    Lunch
-                </option>
+                        <option value="g">
+                            Grams (g)
+                        </option>
 
-                <option value="Snack">
-                    Snack
-                </option>
+                        <option value="ml">
+                            Milliliters (ml)
+                        </option>
 
-                <option value="Dinner">
-                    Dinner
-                </option>
-
-            </select>
-
-            <br /><br />
-
-            <button onClick={handleCalculate}>
-                Calculate
-            </button>
-
-            <hr />
-
-            {result && (
-
-                <div>
-
-                    <h3>Nutrition Information</h3>
-
-                    <p>
-                        Calories : {result.calories}
-                    </p>
-
-                    <p>
-                        Protein : {result.protein}
-                    </p>
-
-                    <p>
-                        Carbs : {result.carbs}
-                    </p>
-
-                    <p>
-                        Fats : {result.fats}
-                    </p>
-
-                    <button onClick={handleSave}>
-                        Save Food
-                    </button>
+                    </select>
 
                 </div>
 
-            )}
+                <select
+                    value={mealType}
+                    onChange={(e) =>
+                        setMealType(e.target.value)
+                    }
+                >
+
+                    <option value="">
+                        Select Meal Type
+                    </option>
+
+                    <option value="Breakfast">
+                        🍳 Breakfast
+                    </option>
+
+                    <option value="Lunch">
+                        🍛 Lunch
+                    </option>
+
+                    <option value="Snack">
+                        🍎 Snack
+                    </option>
+
+                    <option value="Dinner">
+                        🍽 Dinner
+                    </option>
+
+                </select>
+
+                <button
+                    className="calculate-btn"
+                    onClick={handleCalculate}
+                >
+
+                    🔍 Calculate Nutrition
+
+                </button>
+
+                {
+
+                    result && (
+
+                        <div className="nutrition-card">
+
+                            <h3>
+
+                                🥗 Nutrition Preview
+
+                            </h3>
+
+                            <div className="nutrition-grid">
+
+                                <div className="nutrition-item">
+
+                                    <h4>🔥 Calories</h4>
+
+                                    <h2>{result.calories}</h2>
+
+                                    <span>kcal</span>
+
+                                </div>
+
+                                <div className="nutrition-item">
+
+                                    <h4>🥩 Protein</h4>
+
+                                    <h2>{result.protein}</h2>
+
+                                    <span>g</span>
+
+                                </div>
+
+                                <div className="nutrition-item">
+
+                                    <h4>🍚 Carbs</h4>
+
+                                    <h2>{result.carbs}</h2>
+
+                                    <span>g</span>
+
+                                </div>
+
+                                <div className="nutrition-item">
+
+                                    <h4>🥑 Fat</h4>
+
+                                    <h2>{result.fats}</h2>
+
+                                    <span>g</span>
+
+                                </div>
+
+                            </div>
+
+                            <button
+                                className="save-btn"
+                                onClick={handleSave}
+                            >
+
+                                💾 Save Food
+
+                            </button>
+
+                        </div>
+
+                    )
+
+                }
+
+            </div>
 
         </div>
+
     );
+
 }
 
 export default AddFood;

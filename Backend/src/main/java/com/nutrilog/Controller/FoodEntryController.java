@@ -50,18 +50,17 @@ public class FoodEntryController {
 
         return "Food Entry Deleted";
     }
-    @GetMapping("/dashboard/{userId}")
-    public DashboardDTO dashboard(
-            @PathVariable Integer userId) {
+    @GetMapping("/dashboard")
+    public DashboardDTO dashboard()
+            {
 
-        return service.getDashboard(userId);
+           return service.getDashboard();
     }
     
-    @GetMapping("/user/{userId}")
-    public List<FoodEntry> getFoodHistory(
-            @PathVariable Integer userId) {
+    @GetMapping("/history")
+    public List<FoodEntry> getFoodHistory() {
 
-        return service.getFoodHistory(userId);
+        return service.getFoodHistory();
 
     }
 }

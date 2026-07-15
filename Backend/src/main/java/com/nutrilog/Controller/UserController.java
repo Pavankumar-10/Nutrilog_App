@@ -33,7 +33,16 @@ public class UserController {
     
     @PostMapping
     public User addUser(@RequestBody User user) {
+    	 System.out.println("Inside addUser Controller");
         return userService.saveUser(user);
+    }
+    
+    @GetMapping("/profile")
+    public User getProfile() {
+    	 System.out.println("Inside Profile Controller");
+
+        return userService.getLoggedInUser();
+
     }
     
     @GetMapping("/{id}")
@@ -41,8 +50,9 @@ public class UserController {
         return userService.getUserById(id);
     }
     
-    @PutMapping
+    @PutMapping("/profile")
     public User updateUser(@RequestBody User user) {
+    	System.out.println("Inside Update User Controller");
         return userService.updateUser(user);
     }
     
@@ -54,12 +64,14 @@ public class UserController {
         return "User Deleted";
     }
     
-    @PostMapping("/login")
-    public User login(@RequestBody User user) {
-
-        return userService.login(
-            user.getEmail(),
-            user.getPassword()
-        );
-    }
+  
+    
+//    @PostMapping("/login")
+//    public User login(@RequestBody User user) {
+//
+//        return userService.login(
+//            user.getEmail(),
+//            user.getPassword()
+//        );
+//}
 }

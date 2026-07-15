@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-    getUserById,
-    updateUser
-} from "../Services/UserServices";
+import { getProfile, updateUser } from "../Services/UserServices";
+import "../Styles/Profile.css";
 
 function Profile() {
 
@@ -12,13 +10,7 @@ function Profile() {
 
         try {
 
-            const loggedUser = JSON.parse(
-                localStorage.getItem("user")
-            );
-
-            const response = await getUserById(
-                loggedUser.userId
-            );
+            const response = await getProfile();
 
             setUser(response.data);
 
@@ -30,6 +22,7 @@ function Profile() {
             alert("Failed To Load Profile");
 
         }
+
     };
 
     useEffect(() => {
@@ -59,8 +52,8 @@ function Profile() {
             alert("Profile Updated Successfully");
 
             localStorage.setItem(
-                "user",
-                JSON.stringify(user)
+                "email",
+                user.email
             );
 
         }
@@ -71,99 +64,151 @@ function Profile() {
             alert("Profile Update Failed");
 
         }
+
     };
 
     return (
 
-        <div className="container">
+        <div className="profile-container">
 
-            <h2>My Profile</h2>
+            <div className="profile-card">
 
-            <br />
+                <div className="profile-header">
 
-            <label>First Name</label>
+                    <div className="avatar">
 
-            <input
-                type="text"
-                name="fname"
-                value={user.fname || ""}
-                onChange={handleChange}
-            />
+                        {
+                            user.fname
+                                ? `${user.fname.charAt(0).toUpperCase()}${user.lname ? user.lname.charAt(0).toUpperCase() : ""}`
+                                : "👤"
+                        }
 
-            <br /><br />
+                    </div>
 
-            <label>Middle Name</label>
+                    <h2>
 
-            <input
-                type="text"
-                name="mname"
-                value={user.mname || ""}
-                onChange={handleChange}
-            />
+                        My Profile
 
-            <br /><br />
+                    </h2>
 
-            <label>Last Name</label>
+                    <p>
 
-            <input
-                type="text"
-                name="lname"
-                value={user.lname || ""}
-                onChange={handleChange}
-            />
+                        Manage your personal information
 
-            <br /><br />
+                    </p>
 
-            <label>Email</label>
+                </div>
 
-            <input
-                type="email"
-                name="email"
-                value={user.email || ""}
-                onChange={handleChange}
-            />
+                <div className="profile-form">
 
-            <br /><br />
+                    <label>
 
-            <label>Phone</label>
+                        First Name
 
-            <input
-                type="text"
-                name="phone"
-                value={user.phone || ""}
-                onChange={handleChange}
-            />
+                    </label>
 
-            <br /><br />
+                    <input
+                        type="text"
+                        name="fname"
+                        value={user.fname || ""}
+                        onChange={handleChange}
+                    />
 
-            <label>Age</label>
+                    <label>
 
-            <input
-                type="number"
-                name="age"
-                value={user.age || ""}
-                onChange={handleChange}
-            />
+                        Middle Name
 
-            <br /><br />
+                    </label>
 
-            <label>Address</label>
+                    <input
+                        type="text"
+                        name="mname"
+                        value={user.mname || ""}
+                        onChange={handleChange}
+                    />
 
-            <input
-                type="text"
-                name="address"
-                value={user.address || ""}
-                onChange={handleChange}
-            />
+                    <label>
 
-            <br /><br />
+                        Last Name
 
-            <button onClick={handleUpdate}>
-                Update Profile
-            </button>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="lname"
+                        value={user.lname || ""}
+                        onChange={handleChange}
+                    />
+
+                    <label>
+
+                        Email
+
+                    </label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        value={user.email || ""}
+                        onChange={handleChange}
+                    />
+
+                    <label>
+
+                        Phone Number
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="phone"
+                        value={user.phone || ""}
+                        onChange={handleChange}
+                    />
+
+                    <label>
+
+                        Age
+
+                    </label>
+
+                    <input
+                        type="number"
+                        name="age"
+                        value={user.age || ""}
+                        onChange={handleChange}
+                    />
+
+                    <label>
+
+                        Address
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="address"
+                        value={user.address || ""}
+                        onChange={handleChange}
+                    />
+
+                    <button
+                        className="update-btn"
+                        onClick={handleUpdate}
+                    >
+
+                        💾 Update Profile
+
+                    </button>
+
+                </div>
+
+            </div>
 
         </div>
+
     );
+
 }
 
 export default Profile;

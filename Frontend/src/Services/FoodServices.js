@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "./AxiosConfig";
 
 const API_URL = "http://localhost:8080/api/food";
 
@@ -20,10 +20,10 @@ export const deleteFood = (id) => {
 
 export const calculateNutrition = (data) => {
     return axios.post(
-        `${API_URL}/calculate`,
+        "http://localhost:8080/api/masterfoods/calculate",
         data
     );
-};
+};;
 
 export const saveFoodEntry = (food) => {
     return axios.post(
@@ -32,12 +32,20 @@ export const saveFoodEntry = (food) => {
     );
 };
 
-export const getFoodHistory = (userId) => {
-    return axios.get(`${API_URL}/user/${userId}`);
+export const getFoodHistory = () => {
+
+    return axios.get(
+        "http://localhost:8080/api/food/history"
+    );
+
 };
 
-export const getDashboard =
-(userId) => { return axios.get( `http://localhost:8080/api/food/dashboard/${userId}` );
+export const getDashboard = () => {
+
+    return axios.get(
+        "http://localhost:8080/api/food/dashboard"
+    );
+
 };
 
 export const getFoodById = (id) => {

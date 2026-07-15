@@ -1,23 +1,20 @@
 import { useEffect, useState } from "react";
 import { getFoodHistory, deleteFood } from "../Services/FoodServices";
 import { useNavigate } from "react-router-dom";
+import "../Styles/FoodHistory.css";
 
 function FoodHistory() {
 
     const [foods, setFoods] = useState([]);
+    const [search, setSearch] = useState("");
 
     const navigate = useNavigate();
 
-    // Load Food History
     const loadFoodHistory = async () => {
 
         try {
 
-            const user =
-                JSON.parse(localStorage.getItem("user"));
-
-            const response =
-                await getFoodHistory(user.userId);
+            const response = await getFoodHistory();
 
             setFoods(response.data);
 
@@ -32,11 +29,11 @@ function FoodHistory() {
 
     };
 
-    // Delete Food
     const handleDelete = async (id) => {
 
-        const confirmDelete =
-            window.confirm("Are you sure?");
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete this food entry?"
+        );
 
         if (!confirmDelete) {
 
@@ -69,112 +66,156 @@ function FoodHistory() {
 
     }, []);
 
+    const filteredFoods = foods.filter(food =>
+
+        food.foodName
+            .toLowerCase()
+            .includes(search.toLowerCase())
+
+    );
+
     return (
 
-        <div className="container">
+        <div className="history-container">
 
-            <h2>Food History</h2>
+            <div className="history-header">
 
-            <table
-                border="1"
-                cellPadding="10"
-                cellSpacing="0"
-            >
+                <h2>📋 Food History</h2>
 
-                <thead>
+                <p>
 
-                    <tr>
+                    View all your food entries in one place.
 
-                        <th>ID</th>
-                        <th>Food Name</th>
-                        <th>Calories</th>
-                        <th>Protein</th>
-                        <th>Carbs</th>
-                        <th>Fats</th>
-                        <th>Meal Type</th>
-                        <th>Date</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                </p>
 
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {
-
-                        foods.length > 0 ?
-
-                        foods.map((food) => (
-
-                            <tr key={food.entryId}>
-
-                                <td>{food.entryId}</td>
-
-                                <td>{food.foodName}</td>
-
-                                <td>{food.calories}</td>
-
-                                <td>{food.protein}</td>
-
-                                <td>{food.carbs}</td>
-
-                                <td>{food.fats}</td>
-
-                                <td>{food.mealType}</td>
-
-                                <td>{food.entryDate}</td>
-
-                                <td>
-
-                                    <button
-                                        onClick={() =>
-                                            navigate(`/editfood/${food.entryId}`)
-                                        }
-                                    >
-
-                                        Edit
-
-                                    </button>
-
-                                </td>
-
-                                <td>
-
-                                    <button
-                                        onClick={() =>
-                                            handleDelete(food.entryId)
-                                        }
-                                    >
-
-                                        Delete
-
-                                    </button>
-
-                                </td>
-
-                            </tr>
-
-                        ))
-
-                        :
-
-                        <tr>
-
-                            <td colSpan="10">
-
-                                No Food Records Found
-
-                            </td>
-
-                        </tr>
-
+                <input
+                    className="search-box"
+                    type="text"
+                    placeholder="🔍 Search Food"
+                    value={search}
+                    onChange={(e) =>
+                        setSearch(e.target.value)
                     }
+                />
 
-                </tbody>
+            </div>
 
-            </table>
+            {
+
+                filteredFoods.length > 0 ?
+
+                    filteredFoods.map((food) => (
+
+                        <div
+                            className="food-card"
+                            key={food.entryId}
+                        >
+
+                            <h3>
+
+                                🍽 {food.foodName}
+
+                            </h3>
+
+                            <p>
+
+                                <strong>Meal :</strong>
+
+                                {" "}
+
+                                {food.mealType}
+
+                            </p>
+
+                            <p>
+
+                                <strong>Date :</strong>
+
+                                {" "}
+
+                                {food.entryDate}
+
+                            </p>
+
+                            <div className="nutrition">
+
+                                <span>
+
+                                    🔥 {food.calories} kcal
+
+                                </span>
+
+                                <span>
+
+                                    🥩 {food.protein} g
+
+                                </span>
+
+                                <span>
+
+                                    🍚 {food.carbs} g
+
+                                </span>
+
+                                <span>
+
+                                    🥑 {food.fats} g
+
+                                </span>
+
+                            </div>
+
+                            <div className="action-buttons">
+
+                                <button
+                                    className="edit-btn"
+                                    onClick={() =>
+                                        navigate(
+                                            `/editfood/${food.entryId}`
+                                        )
+                                    }
+                                >
+
+                                    ✏ Edit
+
+                                </button>
+
+                                <button
+                                    className="delete-btn"
+                                    onClick={() =>
+                                        handleDelete(food.entryId)
+                                    }
+                                >
+
+                                    🗑 Delete
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    ))
+
+                    :
+
+                    <div className="food-card">
+
+                        <h3>
+
+                            🍽 No Food Records Found
+
+                        </h3>
+
+                        <p>
+
+                            Start adding your meals to track your nutrition.
+
+                        </p>
+
+                    </div>
+
+            }
 
         </div>
 
